@@ -1,0 +1,9 @@
+names:
+  - star fish
+  - jelly fish
+  - others
+  - dolphin
+nc: 4
+test: F:/Workspace/cdac/website/model/dataset/test/images
+train: F:/Workspace/cdac/website/model/dataset/train/images
+val: F:/Workspace/cdac/website/model/dataset/valid/images
