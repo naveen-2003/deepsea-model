@@ -1,9 +1,12 @@
 names:
-  - star fish
-  - jelly fish
+  - elephant
+  - giraffe
+  - lion
+  - tiger
+  - monkey
+  - panda
   - others
-  - dolphin
-nc: 4
+nc: 7
 test: F:/Workspace/cdac/website/model/dataset/test/images
 train: F:/Workspace/cdac/website/model/dataset/train/images
 val: F:/Workspace/cdac/website/model/dataset/valid/images

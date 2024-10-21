@@ -6,6 +6,7 @@ __pycache__/
 # Own ignores 
 dataset/
 result/
+public/
 Scripts/
 share/
 pyvenv.cfg

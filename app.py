@@ -5,6 +5,9 @@ from pymongo import MongoClient
 import shutil
 import os
 from bson.objectid import ObjectId
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -17,7 +20,10 @@ training_status = {
     "total_epochs": 0        # Total number of epochs
 }
 
-client = MongoClient("mongodb://localhost:27017/deepsea?replicaSet=myReplicaSet0")
+mongo_url = os.getenv('MONGO_URL')
+if(mongo_url is None):
+    exit()
+client = MongoClient(mongo_url)
 db = client.deepsea
 
 
@@ -57,11 +63,13 @@ def train_model(name,organizationId, datasetId, datasetName, modelId, modelType,
     # Add the custom callback to the model
     model.add_callback("on_train_batch_end", progress_callback)
     new_model_path = f"./result/{organizationId}/{datasetName}_{modelType}_{modelId}/weights/best.pt"
-    destination_path = f"../backend/public/models/{organizationId}/{datasetName}_{modelType}_{modelId}.pt"
+    destination_path = f"{"../backend/" if os.getenv('STORAGE_PATH')=='' else os.getenv('STORAGE_PATH')}public/models/{organizationId}/{datasetName}_{modelType}_{modelId}.pt"
+    print(destination_path)
     os.makedirs(os.path.dirname(destination_path), exist_ok=True)
     # db.models.delete_many({"isPreTrained":False,"dataset":ObjectId(datasetId),"baseModel":ObjectId(modelId),"organization": ObjectId(organizationId),"type":modelType})
     newModel = db.models.insert_one({ "name": name,"status":"training","isPreTrained":False,"dataset":ObjectId(datasetId),"baseModel":ObjectId(modelId),"organization": ObjectId(organizationId),"type":modelType,"isActive":True})
     model.train(data="./data.yaml", epochs=10, imgsz=640, project="result/"+organizationId, name=f"{datasetName}_{modelType}_{modelId}", exist_ok=True)
+    os.rmdir(f"./dataset")
     shutil.copy2(new_model_path, os.path.join(os.path.dirname(destination_path),f"{datasetName}_{modelType}_{modelId}.pt"))
     db.models.update_one({"_id":newModel.inserted_id},{"$set":{"status":"completed","path":f"public/models/{organizationId}/{datasetName}_{modelType}_{modelId}.pt"}})
     # Once training completes, update status
