@@ -68,8 +68,8 @@ def train_model(name,organizationId, datasetId, datasetName, modelId, modelType,
     os.makedirs(os.path.dirname(destination_path), exist_ok=True)
     # db.models.delete_many({"isPreTrained":False,"dataset":ObjectId(datasetId),"baseModel":ObjectId(modelId),"organization": ObjectId(organizationId),"type":modelType})
     newModel = db.models.insert_one({ "name": name,"status":"training","isPreTrained":False,"dataset":ObjectId(datasetId),"baseModel":ObjectId(modelId),"organization": ObjectId(organizationId),"type":modelType,"isActive":True})
-    model.train(data="./data.yaml", epochs=10, imgsz=640, project="result/"+organizationId, name=f"{datasetName}_{modelType}_{modelId}", exist_ok=True)
-    os.rmdir(f"./dataset")
+    model.train(data="./data.yaml" if modelType!="classification" else "dataset" , epochs=10, imgsz=640, project="result/"+organizationId, name=f"{datasetName}_{modelType}_{modelId}", exist_ok=True)
+    shutil.rmtree(f"./dataset", ignore_errors=True)
     shutil.copy2(new_model_path, os.path.join(os.path.dirname(destination_path),f"{datasetName}_{modelType}_{modelId}.pt"))
     db.models.update_one({"_id":newModel.inserted_id},{"$set":{"status":"completed","path":f"public/models/{organizationId}/{datasetName}_{modelType}_{modelId}.pt"}})
     # Once training completes, update status

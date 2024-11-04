@@ -1,12 +1,12 @@
 names:
-  - elephant
-  - giraffe
-  - lion
-  - tiger
-  - monkey
-  - panda
+  - Lion
+  - Tiger
+  - Giraffe
+  - Elephant
+  - Panda
+  - zebra
   - others
 nc: 7
-test: F:/Workspace/cdac/website/model/dataset/test/images
-train: F:/Workspace/cdac/website/model/dataset/train/images
-val: F:/Workspace/cdac/website/model/dataset/valid/images
+test: F:\Workspace\cdac\website\model/dataset/test/images
+train: F:\Workspace\cdac\website\model/dataset/train/images
+val: F:\Workspace\cdac\website\model/dataset/valid/images
